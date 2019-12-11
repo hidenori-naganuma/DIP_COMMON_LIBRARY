@@ -1,0 +1,2 @@
+# DIP_COMMON_LIBRARY
+DIP共通ライブラリ管理
