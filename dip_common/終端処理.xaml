@@ -1,0 +1,417 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="TerminationProcessing" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:njl="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property sap2010:Annotation.AnnotationText="プロジェクト名" Name="in_ProjectName" Type="InArgument(x:String)" />
+    <x:Property sap2010:Annotation.AnnotationText="共通設定のDictionary" Name="in_dicCommon" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
+    <x:Property Name="in_sequenceCsvFile" Type="InArgument(x:String)" />
+  </x:Members>
+  <mva:VisualBasic.Settings>
+    <x:Null />
+  </mva:VisualBasic.Settings>
+  <sap:VirtualizedContainerService.HintSize>679,3675</sap:VirtualizedContainerService.HintSize>
+  <sap2010:WorkflowViewState.IdRef>TerminationProcessing_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="27">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>Microsoft.VisualBasic.CompilerServices</x:String>
+      <x:String>System.Xml.Serialization</x:String>
+      <x:String>System.Net.Security</x:String>
+      <x:String>System.Net</x:String>
+      <x:String>Newtonsoft.Json</x:String>
+      <x:String>Newtonsoft.Json.Linq</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="21">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>UiPath.Excel</AssemblyReference>
+      <AssemblyReference>UiPath.Mail</AssemblyReference>
+      <AssemblyReference>Newtonsoft.Json</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence sap2010:Annotation.AnnotationText="＜終端処理モジュール＞&#xA;各プロジェクトの最後に、次プロジェクトへの情報の受け渡しなどを行う。&#xA;&#xA;&lt;例&gt;&#xA;robotA（outフォルダのデータ）&#xA;↓&#xA;robotB（inフォルダへ移動）" DisplayName="TerminationProcessing" sap:VirtualizedContainerService.HintSize="639,3555" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="sd:DataTable" sap2010:Annotation.AnnotationText="設定ファイルから読み込んだデータテーブル" Name="settingDataTable" />
+      <Variable x:TypeArguments="x:String" Name="projectRootPath" />
+      <Variable x:TypeArguments="x:String" Name="projectOutPath" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <If Condition="[File.Exists(in_sequenceCsvFile)]" DisplayName="引数が正しくない時はエラーを返す" sap:VirtualizedContainerService.HintSize="617,208" sap2010:WorkflowViewState.IdRef="If_6">
+      <If.Else>
+        <Throw DisplayName="スロー" Exception="[new ArgumentException(&quot;シーケンスファイルパスが正しくありません&quot;, in_sequenceCsvFile)]" sap:VirtualizedContainerService.HintSize="200,22" sap2010:WorkflowViewState.IdRef="Throw_1" />
+      </If.Else>
+    </If>
+    <ui:ReadCsvFile sap2010:Annotation.AnnotationText="＜入力＞&#xA;読み込む設定ファイルを指定する。" DataTable="[settingDataTable]" Delimitator="Comma" DisplayName="CSV を読み込む" Encoding="shift-jis" FilePath="[in_sequenceCsvFile]" sap:VirtualizedContainerService.HintSize="617,101" sap2010:WorkflowViewState.IdRef="ReadCsvFile_1">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:ReadCsvFile>
+    <Assign DisplayName="代入" sap:VirtualizedContainerService.HintSize="617,60" sap2010:WorkflowViewState.IdRef="Assign_5">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[projectRootPath]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[in_dicCommon("ProjectRoot").ToString]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign DisplayName="代入" sap:VirtualizedContainerService.HintSize="617,60" sap2010:WorkflowViewState.IdRef="Assign_6">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[projectOutPath]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[Path.Combine(ProjectRootPath,in_ProjectName,"out")]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:ForEachRow CurrentIndex="{x:Null}" sap2010:Annotation.AnnotationText="DataTable型のsettingDataTableという変数から、&#xA;１行分ずつデータをrowという変数に抽出し、処理を行う。&#xA;&#xA;settingDataTableのカラムは３種類を想定。&#xA;・Event&#xA;・Trigger&#xA;・NextProject&#xA;&#xA;１行分データ抽出したときのrowのデータは、&#xA;row(0)　→　Event　（イベント名　RUN/MOVE/その他）&#xA;row(1)　→　Trigger （移動対象のファイル名　 ワイルドカードで記載されている可能性大）&#xA;row(2)　→　NextProject　　の値になることを想定。&#xA;　　　　　（次につなげていくロボットのプロジェクト名）" DataTable="[settingDataTable]" DisplayName="読み込んだデータテーブルの行数分だけ繰り返し" sap:VirtualizedContainerService.HintSize="617,2725" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
+      <ui:ForEachRow.Body>
+        <ActivityAction x:TypeArguments="sd:DataRow">
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+          </ActivityAction.Argument>
+          <Sequence DisplayName="１行分ごとの処理" sap:VirtualizedContainerService.HintSize="587,2370" sap2010:WorkflowViewState.IdRef="Sequence_5">
+            <Sequence.Variables>
+              <Variable x:TypeArguments="x:Boolean" sap2010:Annotation.AnnotationText="トリガーファイルが存在するかどうかのフラグ" Name="triggerFileFlag" />
+              <Variable x:TypeArguments="s:String[]" sap2010:Annotation.AnnotationText="トリガーファイルの名前の一覧を格納" Name="fileList" />
+              <Variable x:TypeArguments="x:String" Name="triggerName" />
+              <Variable x:TypeArguments="x:String" Name="eventName" />
+              <Variable x:TypeArguments="x:String" Name="nextProject" />
+            </Sequence.Variables>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <Assign DisplayName="代入" sap:VirtualizedContainerService.HintSize="565,60" sap2010:WorkflowViewState.IdRef="Assign_7">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[eventName]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[row(0).ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign DisplayName="代入" sap:VirtualizedContainerService.HintSize="565,60" sap2010:WorkflowViewState.IdRef="Assign_8">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[triggerName]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[row(1).ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign DisplayName="代入" sap:VirtualizedContainerService.HintSize="565,60" sap2010:WorkflowViewState.IdRef="Assign_9">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[nextProject]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[row(2).ToString]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap2010:Annotation.AnnotationText="row(1)(trigger)にはワイルドカードで、&#xA;移動対象ファイル名を複数指定している可能性があることを想定。&#xA;&#xA;そのため、プロジェクトフォルダのoutフォルダの中から、条件に該当するファイル名一覧を取得する。" DisplayName="トリガーファイル一覧を取得" sap:VirtualizedContainerService.HintSize="565,177" sap2010:WorkflowViewState.IdRef="Assign_4">
+              <Assign.To>
+                <OutArgument x:TypeArguments="s:String[]">[fileList]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="s:String[]">[Directory.GetFiles(projectOutPath,triggerName)]</InArgument>
+              </Assign.Value>
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+            </Assign>
+            <If Condition="[fileList.Count&gt;0]" DisplayName="条件分岐" sap:VirtualizedContainerService.HintSize="565,239" sap2010:WorkflowViewState.IdRef="If_1">
+              <If.Then>
+                <ui:LogMessage DisplayName="トリガ情報出力" sap:VirtualizedContainerService.HintSize="314,91" sap2010:WorkflowViewState.IdRef="LogMessage_6" Level="Info" Message="[&quot;【終端処理】 ：トリガーファイル[&quot;+triggerName+&quot;] / 次プロジェクト[&quot;+nextProject+&quot;] / Event[&quot;+eventName+&quot;]&quot; +vbcr + &#xA;&quot;【終端処理】 ：トリガーファイルが&quot;+fileList.Count.ToString+&quot;ファイル見つかりました&quot;]" />
+              </If.Then>
+            </If>
+            <If sap2010:Annotation.AnnotationText="Thenなら、&#xA;対象ファイル（trigger）を、次プロジェクトのinフォルダに移動。&#xA;&#xA;Elseなら、何もしない。" Condition="[(fileList.Count&gt;0) and (eventName = &quot;RUN&quot; OR eventName = &quot;MOVE&quot;)]" DisplayName="トリガーファイルが存在し、イベントがRUNまたはMOVEなら" sap:VirtualizedContainerService.HintSize="565,872" sap2010:WorkflowViewState.IdRef="If_2">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <If.Then>
+                <Sequence DisplayName="シーケンス" sap:VirtualizedContainerService.HintSize="374,652" sap2010:WorkflowViewState.IdRef="Sequence_7">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <ui:ForEach x:TypeArguments="x:Object" CurrentIndex="{x:Null}" DisplayName="繰り返し (コレクションの各要素)" sap:VirtualizedContainerService.HintSize="352,528" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[fileList]">
+                    <ui:ForEach.Body>
+                      <ActivityAction x:TypeArguments="x:Object">
+                        <ActivityAction.Argument>
+                          <DelegateInArgument x:TypeArguments="x:Object" Name="item" />
+                        </ActivityAction.Argument>
+                        <Sequence DisplayName="シーケンス" sap:VirtualizedContainerService.HintSize="336,394" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <ui:MoveFile ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="元ファイル&#xA;→　パス付きの&#xA;　　取得したファイル名&#xA;&#xA;保存先&#xA;→　プロジェクトフォルダのルートパス ＋nextProject + &quot;in&quot;" Destination="[path.Combine(ProjectRootPath,nextProject,&quot;in&quot;)]" DisplayName="ファイルを移動" sap:VirtualizedContainerService.HintSize="314,139" sap2010:WorkflowViewState.IdRef="MoveFile_1" Overwrite="True" Path="[item.ToString]">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                          </ui:MoveFile>
+                          <ui:LogMessage DisplayName="メッセージをログ" sap:VirtualizedContainerService.HintSize="314,91" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Info" Message="[&quot;【終端処理】[&quot;+eventName+&quot;] Copy元 : (&quot;+item.ToString + &quot;)⇒ Copy先 : (&quot;+path.Combine(ProjectRootPath,nextProject,&quot;in&quot;+&quot; ) &quot;)]">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                          </ui:LogMessage>
+                        </Sequence>
+                      </ActivityAction>
+                    </ui:ForEach.Body>
+                  </ui:ForEach>
+                </Sequence>
+              </If.Then>
+            </If>
+            <If sap2010:Annotation.AnnotationText="Thenなら、&#xA;次プロジェクトの実行をOrchestratorに要求&#xA;&#xA;Elseなら、何もしない" Condition="[(fileList.Count&gt;0) AND (row(0).ToString = &quot;RUN&quot; AND Boolean.Parse(in_dicCommon(&quot;UseOchestrator&quot;).ToString) = true )]" DisplayName="トリガーファイルが存在し、イベントがRUNなら" sap:VirtualizedContainerService.HintSize="565,538" sap2010:WorkflowViewState.IdRef="If_3">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                  <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <If.Then>
+                <TryCatch DisplayName="トライキャッチ" sap:VirtualizedContainerService.HintSize="414,318" sap2010:WorkflowViewState.IdRef="TryCatch_1">
+                  <TryCatch.Try>
+                    <Sequence DisplayName="Orhcestratorに次のプロジェクトの実行要求" sap:VirtualizedContainerService.HintSize="509,1333" sap2010:WorkflowViewState.IdRef="Sequence_15">
+                      <Sequence.Variables>
+                        <Variable x:TypeArguments="njl:JObject" Name="releasesJson" />
+                        <Variable x:TypeArguments="x:String" Name="bearer" />
+                        <Variable x:TypeArguments="x:String" Name="robotId" />
+                        <Variable x:TypeArguments="x:String" Name="restUrl" />
+                        <Variable x:TypeArguments="x:Int32" Name="responseCode" />
+                      </Sequence.Variables>
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <If Condition="[IsNothing(releasesJson)]" DisplayName="条件分岐" sap:VirtualizedContainerService.HintSize="487,235" sap2010:WorkflowViewState.IdRef="If_4">
+                        <If.Then>
+                          <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="Orchestrator事前処理の実行" sap:VirtualizedContainerService.HintSize="314,87" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="Orchestrator事前処理.xaml">
+                            <ui:InvokeWorkflowFile.Arguments>
+                              <InArgument x:TypeArguments="x:String" x:Key="in_robotName">[in_dicCommon("RobotName").ToString]</InArgument>
+                              <InArgument x:TypeArguments="x:String" x:Key="in_envName">[in_dicCommon("RobotGroup").ToString]</InArgument>
+                              <OutArgument x:TypeArguments="x:String" x:Key="out_bearer">[bearer]</OutArgument>
+                              <OutArgument x:TypeArguments="x:String" x:Key="out_robotId">[robotId]</OutArgument>
+                              <OutArgument x:TypeArguments="njl:JObject" x:Key="out_Releases">[releasesJson]</OutArgument>
+                              <OutArgument x:TypeArguments="x:String" x:Key="out_restUrl">[restUrl]</OutArgument>
+                              <OutArgument x:TypeArguments="x:Int32" x:Key="out_responseCode">[responseCode]</OutArgument>
+                            </ui:InvokeWorkflowFile.Arguments>
+                          </ui:InvokeWorkflowFile>
+                        </If.Then>
+                      </If>
+                      <If Condition="[responseCode=200]" DisplayName="条件分岐" sap:VirtualizedContainerService.HintSize="487,934" sap2010:WorkflowViewState.IdRef="If_5">
+                        <If.Then>
+                          <Sequence DisplayName="シーケンス" sap:VirtualizedContainerService.HintSize="336,786" sap2010:WorkflowViewState.IdRef="Sequence_16">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <Sequence sap2010:Annotation.AnnotationText="releasesからJobKeyを取得し、StartJobs APIを要求する" DisplayName="ジョブの実行" sap:VirtualizedContainerService.HintSize="314,531" sap2010:WorkflowViewState.IdRef="Sequence_13">
+                              <Sequence.Variables>
+                                <Variable x:TypeArguments="x:String" Name="jobKey" />
+                                <Variable x:TypeArguments="x:String" Name="processKey" />
+                                <Variable x:TypeArguments="njl:JObject" Name="processJson" />
+                              </Sequence.Variables>
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                  <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <Assign sap2010:Annotation.AnnotationText="取得したProcessのJsonから対応したEnvIdのJsonのみ取得" sap:VirtualizedContainerService.HintSize="242,102" sap2010:WorkflowViewState.IdRef="Assign_16">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="njl:JObject">[processJson]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="njl:JObject">[releasesJson("value").FirstOrDefault(function(p) p.Item("ProcessKey").ToString = nextProject).ToObject(of JObject)]</InArgument>
+                                </Assign.Value>
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                              </Assign>
+                              <Assign DisplayName="Keyの取得" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_17">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:String">[jobKey]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:String">[processJson.Item("Key").ToString]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                              <Sequence sap2010:Annotation.AnnotationText="odata/Jobs/UiPath.Server.Configuration.OData.StartJobsでjobKeyのjobをrobotIdのrobotで実行要求" sap:VirtualizedContainerService.HintSize="242,123" sap2010:WorkflowViewState.IdRef="Sequence_12">
+                                <Sequence.Variables>
+                                  <Variable x:TypeArguments="x:String" Name="endPoint" />
+                                  <Variable x:TypeArguments="x:String" Name="body" />
+                                  <Variable x:TypeArguments="x:String" Name="jsonString" />
+                                </Sequence.Variables>
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                    <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                                    <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                                <Assign DisplayName="Rest" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_18">
+                                  <Assign.To>
+                                    <OutArgument x:TypeArguments="x:String">[endPoint]</OutArgument>
+                                  </Assign.To>
+                                  <Assign.Value>
+                                    <InArgument x:TypeArguments="x:String">[restUrl+"odata/Jobs/UiPath.Server.Configuration.OData.StartJobs"]</InArgument>
+                                  </Assign.Value>
+                                </Assign>
+                                <Assign sap2010:Annotation.AnnotationText="&quot;{'startInfo': {'ReleaseKey': '&quot;+jobKey+&quot;','Strategy': 'Specific','RobotIds': [&quot;+robotId+&quot;],'NoOfRobots':0}}&quot;" DisplayName="Bodyパラメータの設定" sap:VirtualizedContainerService.HintSize="242,117" sap2010:WorkflowViewState.IdRef="Assign_19">
+                                  <Assign.To>
+                                    <OutArgument x:TypeArguments="x:String">[body]</OutArgument>
+                                  </Assign.To>
+                                  <Assign.Value>
+                                    <InArgument x:TypeArguments="x:String">["{'startInfo': {'ReleaseKey': '"+jobKey+"','Strategy': 'Specific','RobotIds': ["+robotId+"],'NoOfRobots':0}}"]</InArgument>
+                                  </Assign.Value>
+                                  <sap:WorkflowViewStateService.ViewState>
+                                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                      <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                                    </scg:Dictionary>
+                                  </sap:WorkflowViewStateService.ViewState>
+                                </Assign>
+                                <ui:HttpClient ClientCertificate="{x:Null}" ClientCertificatePassword="{x:Null}" ConsumerKey="{x:Null}" ConsumerSecret="{x:Null}" ContinueOnError="{x:Null}" OAuth1Token="{x:Null}" OAuth1TokenSecret="{x:Null}" OAuth2Token="{x:Null}" Password="{x:Null}" ResourcePath="{x:Null}" ResponseHeaders="{x:Null}" Username="{x:Null}" AcceptFormat="JSON" sap2010:Annotation.AnnotationText="restUrl+&quot;odata/Jobs/UiPath.Server.Configuration.OData.StartJobs&quot;" Body="[body]" BodyFormat="application/json" DisplayName="HTTP Request" EndPoint="[endPoint]" sap:VirtualizedContainerService.HintSize="242,79" sap2010:WorkflowViewState.IdRef="HttpClient_5" Method="POST" Result="[jsonString]" StatusCode="[responseCode]" TimeoutMS="6000">
+                                  <ui:HttpClient.Attachments>
+                                    <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+                                  </ui:HttpClient.Attachments>
+                                  <ui:HttpClient.Cookies>
+                                    <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+                                  </ui:HttpClient.Cookies>
+                                  <ui:HttpClient.Headers>
+                                    <InArgument x:TypeArguments="x:String" x:Key="Content-Type">application/json</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="Authorization">["Bearer "+ bearer]</InArgument>
+                                  </ui:HttpClient.Headers>
+                                  <ui:HttpClient.Parameters>
+                                    <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+                                  </ui:HttpClient.Parameters>
+                                  <ui:HttpClient.UrlSegments>
+                                    <scg:Dictionary x:TypeArguments="x:String, InArgument(x:String)" />
+                                  </ui:HttpClient.UrlSegments>
+                                  <sap:WorkflowViewStateService.ViewState>
+                                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                      <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                                    </scg:Dictionary>
+                                  </sap:WorkflowViewStateService.ViewState>
+                                </ui:HttpClient>
+                                <ui:LogMessage DisplayName="Log message" sap:VirtualizedContainerService.HintSize="314,91" sap2010:WorkflowViewState.IdRef="LogMessage_4" Level="Info" Message="[&quot;JobStart[&quot; +responseCode.ToString+ &quot;] : &quot; + jsonString]">
+                                  <sap:WorkflowViewStateService.ViewState>
+                                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                    </scg:Dictionary>
+                                  </sap:WorkflowViewStateService.ViewState>
+                                </ui:LogMessage>
+                              </Sequence>
+                            </Sequence>
+                            <ui:LogMessage DisplayName="メッセージをログ" sap:VirtualizedContainerService.HintSize="314,91" sap2010:WorkflowViewState.IdRef="LogMessage_5" Level="Info" Message="[&quot;【終端処理】[RUN] 次に実行するプロジェクト [&quot; + nextProject + &quot;] の登録を行いました&quot;]">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                            </ui:LogMessage>
+                          </Sequence>
+                        </If.Then>
+                      </If>
+                    </Sequence>
+                  </TryCatch.Try>
+                  <TryCatch.Catches>
+                    <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="400,156" sap2010:WorkflowViewState.IdRef="Catch`1_1">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <ActivityAction x:TypeArguments="s:Exception">
+                        <ActivityAction.Argument>
+                          <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                        </ActivityAction.Argument>
+                        <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" DisplayName="ワークフローファイルを呼び出し" sap:VirtualizedContainerService.HintSize="314,87" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="定型Exceptionログを出力.xaml">
+                          <ui:InvokeWorkflowFile.Arguments>
+                            <InArgument x:TypeArguments="s:Exception" x:Key="in_exception">[exception]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_errorMessage">["["+in_projectName + "]の Orchestratorでの自動実行に失敗しました"]</InArgument>
+                            <InArgument x:TypeArguments="x:Int32" x:Key="in_errorId">0</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_occurencePosition">["["+in_projectName + "]終端処理/Orchestrator実行"]</InArgument>
+                          </ui:InvokeWorkflowFile.Arguments>
+                        </ui:InvokeWorkflowFile>
+                      </ActivityAction>
+                    </Catch>
+                  </TryCatch.Catches>
+                </TryCatch>
+              </If.Then>
+            </If>
+          </Sequence>
+        </ActivityAction>
+      </ui:ForEachRow.Body>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:ForEachRow>
+  </Sequence>
+</Activity>

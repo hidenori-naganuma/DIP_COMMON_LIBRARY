@@ -1,0 +1,514 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Exception出力" this:Exception出力.in_occurencePosition="errorPlace" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:mvd="clr-namespace:Microsoft.VisualBasic.Devices;assembly=Microsoft.VisualBasic" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib" xmlns:si="clr-namespace:System.IO;assembly=mscorlib" xmlns:this="clr-namespace:" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="in_exception" Type="InArgument(s:Exception)" />
+    <x:Property Name="in_errorMessage" Type="InArgument(x:String)" />
+    <x:Property Name="in_errorId" Type="InArgument(x:Int32)" />
+    <x:Property Name="in_occurencePosition" Type="InArgument(x:String)" />
+  </x:Members>
+  <mva:VisualBasic.Settings>
+    <x:Null />
+  </mva:VisualBasic.Settings>
+  <sap:VirtualizedContainerService.HintSize>715,1817</sap:VirtualizedContainerService.HintSize>
+  <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Windows.Markup</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>UiPath.Excel</AssemblyReference>
+      <AssemblyReference>UiPath.Mail</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence sap2010:Annotation.AnnotationText="ExceptionメッセージをLogに出力します&#xA;＜説明＞&#xA;出力されるログ文字列は&#xA;in_errorMessage (in_errorId) : エラー発生個所 [in_occurencePosition] 例外内容&#xA;をFatalのLogとして出力します&#xA;＜引数＞&#xA;in_exception  CatchしたExceptionオブジェクト（省略可）&#xA;in_errorMessage 出力したい任意のエラーメッセージ（不要な場合には空文字）&#xA;in_errorId 出力したい任意のエラーID番号（不要な場合には0）&#xA;in_occurencePosition 出力したい任意のエラー発生個所（できればいれてほしいが不要な場合には空文字）&#xD;&#xA;&#xD;&#xA;#2019/12/11 ログフィールドにエラーIDを出力するように修正" DisplayName="メイン処理" sap:VirtualizedContainerService.HintSize="675,1737" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="exString" />
+      <Variable x:TypeArguments="x:String" Name="memoryinfo" />
+      <Variable x:TypeArguments="x:String" Name="driveinfo" />
+      <Variable x:TypeArguments="x:String" Name="errorId" />
+      <Variable x:TypeArguments="x:String" Name="errorMessage" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <If sap2010:Annotation.AnnotationText="Exceptionオブジェクトの有無に応じて例外内容文字列を生成する&#xA;・例外なしの場合 -&gt; 例外なし&#xA;・例外ありの場合 -&gt; (改行)例外タイプ: Exception.GetType / 例外メッセージ: Exception.Message 例外場所: Exception.Source" Condition="[IsNothing( in_exception )]" DisplayName="例外がある場合の処理" sap:VirtualizedContainerService.HintSize="653,198" sap2010:WorkflowViewState.IdRef="If_1">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <Assign DisplayName="例外がない場合" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_1">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:String">[exString]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:String">【例外情報】 : 例外なし</InArgument>
+          </Assign.Value>
+        </Assign>
+      </If.Then>
+      <If.Else>
+        <Sequence DisplayName="Exception文字列を作成" sap:VirtualizedContainerService.HintSize="486,1492" sap2010:WorkflowViewState.IdRef="Sequence_2">
+          <Sequence.Variables>
+            <Variable x:TypeArguments="x:String" Name="exType" />
+            <Variable x:TypeArguments="x:String" Name="exMessage" />
+            <Variable x:TypeArguments="x:String" Name="exSource" />
+          </Sequence.Variables>
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign sap2010:Annotation.AnnotationText="実際のExeceptionの型&#xA;（NullExceptionとかSelectorNotFoundとか）" DisplayName="例外タイプ文字列を取得" sap:VirtualizedContainerService.HintSize="464,117" sap2010:WorkflowViewState.IdRef="Assign_2">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[exType]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[in_exception.GetType.ToString]</InArgument>
+            </Assign.Value>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </Assign>
+          <Assign sap2010:Annotation.AnnotationText="Exception表示メッセージを取得" DisplayName="例外メッセージを取得" sap:VirtualizedContainerService.HintSize="464,87" sap2010:WorkflowViewState.IdRef="Assign_3">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[exMessage]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[in_exception.Message]</InArgument>
+            </Assign.Value>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </Assign>
+          <Assign sap2010:Annotation.AnnotationText="例外が発生した場所を取得&#xA;稀に役に立つこともある" DisplayName="例外発生場所を取得" sap:VirtualizedContainerService.HintSize="464,102" sap2010:WorkflowViewState.IdRef="Assign_4">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[exSource]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[in_exception.Source]</InArgument>
+            </Assign.Value>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </Assign>
+          <Assign sap2010:Annotation.AnnotationText="取得した文字の組み合わせで例外用のメッセージ文字列を作成" DisplayName="組み合わせた文字" sap:VirtualizedContainerService.HintSize="464,102" sap2010:WorkflowViewState.IdRef="Assign_5">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[exString]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[vblf + "【例外情報】 : 例外タイプ [" + exType + "] / 例外メッセージ [" + exMessage + "] / 例外場所 [" + exSource +"]"]</InArgument>
+            </Assign.Value>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </Assign>
+          <If Condition="[IsNothing(in_exception.InnerException)=false]" DisplayName="条件分岐" sap:VirtualizedContainerService.HintSize="464,800" sap2010:WorkflowViewState.IdRef="If_2">
+            <If.Then>
+              <Sequence DisplayName="シーケンス" sap:VirtualizedContainerService.HintSize="264,652" sap2010:WorkflowViewState.IdRef="Sequence_9">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <Assign sap2010:Annotation.AnnotationText="実際のExeceptionの型&#xA;（NullExceptionとかSelectorNotFoundとか）" DisplayName="例外タイプ文字列を取得" sap:VirtualizedContainerService.HintSize="242,117" sap2010:WorkflowViewState.IdRef="Assign_25">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[exType]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[in_exception.InnerException.GetType.ToString]</InArgument>
+                  </Assign.Value>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Assign>
+                <Assign sap2010:Annotation.AnnotationText="Exception表示メッセージを取得" DisplayName="例外メッセージを取得" sap:VirtualizedContainerService.HintSize="242,87" sap2010:WorkflowViewState.IdRef="Assign_26">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[exMessage]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[in_exception.InnerException.Message]</InArgument>
+                  </Assign.Value>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Assign>
+                <Assign sap2010:Annotation.AnnotationText="例外が発生した場所を取得&#xA;稀に役に立つこともある" DisplayName="例外発生場所を取得" sap:VirtualizedContainerService.HintSize="242,102" sap2010:WorkflowViewState.IdRef="Assign_27">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[exSource]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[in_exception.InnerException.Source]</InArgument>
+                  </Assign.Value>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Assign>
+                <Assign sap2010:Annotation.AnnotationText="取得した文字の組み合わせで例外用のメッセージ文字列を作成" DisplayName="組み合わせた文字" sap:VirtualizedContainerService.HintSize="242,102" sap2010:WorkflowViewState.IdRef="Assign_28">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[exString]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[exString + vblf + "【内部例外】 : 例外タイプ [" + exType + "] / 例外メッセージ [" + exMessage + "] / 例外場所 [" + exSource +"]"]</InArgument>
+                  </Assign.Value>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Assign>
+              </Sequence>
+            </If.Then>
+          </If>
+        </Sequence>
+      </If.Else>
+    </If>
+    <Sequence DisplayName="1.各ドライブの空き状態 確認" sap:VirtualizedContainerService.HintSize="653,51" sap2010:WorkflowViewState.IdRef="Sequence_5">
+      <Sequence.Variables>
+        <Variable x:TypeArguments="x:String" Name="commonSettingsPath" />
+        <Variable x:TypeArguments="x:String" Name="RootPath" />
+        <Variable x:TypeArguments="x:Boolean" Name="isSuccess" />
+        <Variable x:TypeArguments="x:String" Name="Root" />
+        <Variable x:TypeArguments="si:DriveInfo" Name="drive" />
+        <Variable x:TypeArguments="x:Int64" Name="totaldrive" />
+        <Variable x:TypeArguments="x:Int64" Name="freespacedrive" />
+        <Variable x:TypeArguments="x:Int64" Name="usedrive" />
+        <Variable x:TypeArguments="x:Double" Name="usagerate" />
+      </Sequence.Variables>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <Sequence DisplayName="1-9.ドライブ関連情報取得" sap:VirtualizedContainerService.HintSize="264,584" sap2010:WorkflowViewState.IdRef="Sequence_3">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <Assign DisplayName="1-11.ドライブ情報の取得" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_6">
+          <Assign.To>
+            <OutArgument x:TypeArguments="si:DriveInfo">[drive]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="si:DriveInfo">[new System.IO.DriveInfo("c:\")]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <Assign DisplayName="1-12.ドライブの最大容量 取得" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_7">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Int64">[totaldrive]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Int64">[Int64.Parse(drive.TotalSize.ToString)]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <Assign DisplayName="1-13.ドライブの空き容量 取得" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_8">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Int64">[freespacedrive]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Int64">[Int64.Parse(drive.TotalFreeSpace.ToString)]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <Assign DisplayName="1-14.ドライブの使用量 取得" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_9">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Int64">[usedrive]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Int64">[totaldrive - freespacedrive]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <Assign DisplayName="1-15.ドライブの使用割合 取得" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_10">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Double">[usagerate]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Double">[(usedrive/totaldrive)*100]</InArgument>
+          </Assign.Value>
+        </Assign>
+      </Sequence>
+      <Sequence DisplayName="1-16.取得ドライブ情報の加工" sap:VirtualizedContainerService.HintSize="264,484" sap2010:WorkflowViewState.IdRef="Sequence_4">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <Assign DisplayName="1-17.ドライブ名取得" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_11">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:String">[Root]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:String">C</InArgument>
+          </Assign.Value>
+        </Assign>
+        <Assign DisplayName="1-18.ドライブの最大容量 バイト⇒GB 変換" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_12">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Int64">[totaldrive]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Int64">[Convert.ToInt64(totaldrive/1024/1024/1024)]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <Assign DisplayName="1-19.ドライブ使用量 バイト⇒GB 変換" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_13">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Int64">[usedrive]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Int64">[Convert.ToInt64(usedrive/1024/1024/1024)]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <Assign DisplayName="1-20.ドライブ使用率 四捨五入" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_14">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Double">[usagerate]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Double">[Convert.ToDouble(math.Round(usagerate))]</InArgument>
+          </Assign.Value>
+        </Assign>
+      </Sequence>
+      <Assign DisplayName="1-21.ドライブ情報メッセージ取得" sap:VirtualizedContainerService.HintSize="264,60" sap2010:WorkflowViewState.IdRef="Assign_15">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:String">[driveinfo]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:String">["Cドライブの最大容量 ["+totaldrive.ToString("#,0") + "GB] / ドライブ使用量 [" + usedrive.ToString("#,0") + "GB] / ドライブの使用率 [" + usagerate.ToString+ "%]"]</InArgument>
+        </Assign.Value>
+      </Assign>
+    </Sequence>
+    <Sequence DisplayName="2.メモリの空き状態 確認" sap:VirtualizedContainerService.HintSize="653,51" sap2010:WorkflowViewState.IdRef="Sequence_8">
+      <Sequence.Variables>
+        <Variable x:TypeArguments="mvd:ComputerInfo" Name="memory" />
+        <Variable x:TypeArguments="x:Int64" Name="totalmemory" />
+        <Variable x:TypeArguments="x:Int64" Name="usememory" />
+        <Variable x:TypeArguments="x:Int64" Name="freespacememory" />
+        <Variable x:TypeArguments="x:Double" Name="usememoryrate" />
+      </Sequence.Variables>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <Sequence DisplayName="2-1.メモリ関連情報取得" sap:VirtualizedContainerService.HintSize="264,584" sap2010:WorkflowViewState.IdRef="Sequence_6">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <Assign DisplayName="2-2.メモリ情報取得" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_16">
+          <Assign.To>
+            <OutArgument x:TypeArguments="mvd:ComputerInfo">[memory]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="mvd:ComputerInfo">[new Microsoft.VisualBasic.Devices.ComputerInfo()]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <Assign DisplayName="2-3.合計物理メモリ容量 取得" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_17">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Int64">[totalmemory]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Int64">[Int64.Parse(memory.TotalPhysicalMemory.ToString)]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <Assign DisplayName="2-4.利用可能物理メモリ容量 取得" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_18">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Int64">[freespacememory]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Int64">[int64.Parse(memory.AvailablePhysicalMemory.ToString)]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <Assign DisplayName="2-5.メモリ使用量 取得" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_19">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Int64">[usememory]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Int64">[totalmemory - freespacememory]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <Assign DisplayName="2-6.メモリ使用率" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_20">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Double">[usememoryrate]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Double">[(usememory / totalmemory)*100]</InArgument>
+          </Assign.Value>
+        </Assign>
+      </Sequence>
+      <Sequence DisplayName="2-7.取得メモリ情報の加工" sap:VirtualizedContainerService.HintSize="264,384" sap2010:WorkflowViewState.IdRef="Sequence_7">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <Assign DisplayName="2-8.合計物理メモリ容量 バイト ⇒KB" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_21">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Int64">[totalmemory]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Int64">[Convert.ToInt64(totalmemory/1024/1024)]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <Assign DisplayName="2-9.メモリ使用量 バイト ⇒ KB" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_22">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Int64">[usememory]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Int64">[Convert.ToInt64(usememory/1024/1024)]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <Assign DisplayName="2-10.メモリ使用率 四捨五入" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_23">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:Double">[usememoryrate]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:Double">[Math.Round(usememoryrate)]</InArgument>
+          </Assign.Value>
+        </Assign>
+      </Sequence>
+      <Assign DisplayName="2-11.メモリ情報を取得" sap:VirtualizedContainerService.HintSize="264,60" sap2010:WorkflowViewState.IdRef="Assign_24">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:String">[memoryinfo]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:String">["合計物理メモリ容量 [" +totalmemory.ToString("#,0") + "MB] / メモリ使用量 [" + usememory.ToString("#,0") + "MB] / 使用率 [" + usememoryrate.ToString + "%]"]</InArgument>
+        </Assign.Value>
+      </Assign>
+    </Sequence>
+    <If Condition="[string.IsNullOrWhiteSpace(in_errorMessage)]" DisplayName="IDなし時には0を出さない" sap:VirtualizedContainerService.HintSize="653,208" sap2010:WorkflowViewState.IdRef="If_5">
+      <If.Then>
+        <Assign DisplayName="代入" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_31">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:String">[in_errorMessage]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:String">不明なエラー</InArgument>
+          </Assign.Value>
+        </Assign>
+      </If.Then>
+    </If>
+    <If Condition="[string.IsNullOrWhiteSpace(in_occurencePosition)]" DisplayName="場所なし時には発生個所を出さない" sap:VirtualizedContainerService.HintSize="653,208" sap2010:WorkflowViewState.IdRef="If_6">
+      <If.Then>
+        <Assign DisplayName="代入" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_32">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:String">[in_occurencePosition]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:String">
+              <Literal x:TypeArguments="x:String" Value="" />
+            </InArgument>
+          </Assign.Value>
+        </Assign>
+      </If.Then>
+      <If.Else>
+        <Assign DisplayName="代入" sap:VirtualizedContainerService.HintSize="242,60" sap2010:WorkflowViewState.IdRef="Assign_33">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:String">[in_occurencePosition]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:String">["【エラー発生個所】 : " + in_occurencePosition + " / "]</InArgument>
+          </Assign.Value>
+        </Assign>
+      </If.Else>
+    </If>
+    <Assign DisplayName="代入" sap:VirtualizedContainerService.HintSize="653,60" sap2010:WorkflowViewState.IdRef="Assign_34">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[errorMessage]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">["【発生エラー】 : "+in_errorMessage + errorId+" / "+ in_occurencePosition + exString + vbcr+"【システム情報】 : " + memoryinfo +" / "+ driveinfo]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:AddLogFields DisplayName="ErrorIDをログフィールドに追加" sap:VirtualizedContainerService.HintSize="653,22" sap2010:WorkflowViewState.IdRef="AddLogFields_1">
+      <ui:AddLogFields.Fields>
+        <InArgument x:TypeArguments="x:Int32" x:Key="ErrorCode">[in_errorId]</InArgument>
+      </ui:AddLogFields.Fields>
+    </ui:AddLogFields>
+    <If Condition="[IsNothing( in_exception )]" DisplayName="例外有無に合わせてレベルを設定" sap:VirtualizedContainerService.HintSize="653,281" sap2010:WorkflowViewState.IdRef="If_4">
+      <If.Then>
+        <ui:LogMessage sap2010:Annotation.AnnotationText="取得した文字列を組み合わせてエラーログを出力&#xA;例外なし時はレベルはWarn固定" DisplayName="例外なし" sap:VirtualizedContainerService.HintSize="314,133" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Warn" Message="[errorMessage]">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+        </ui:LogMessage>
+      </If.Then>
+      <If.Else>
+        <ui:LogMessage sap2010:Annotation.AnnotationText="取得した文字列を組み合わせてエラーログを出力&#xA;例外あり時はレベルはError固定" DisplayName="例外あり" sap:VirtualizedContainerService.HintSize="314,133" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Error" Message="[errorMessage]">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+        </ui:LogMessage>
+      </If.Else>
+    </If>
+    <ui:RemoveLogFields DisplayName="ErrorIDをログフィールドから削除" sap:VirtualizedContainerService.HintSize="653,22" sap2010:WorkflowViewState.IdRef="RemoveLogFields_1">
+      <ui:RemoveLogFields.Fields>
+        <scg:List x:TypeArguments="InArgument(x:String)" Capacity="4">
+          <InArgument x:TypeArguments="x:String">ErrorCode</InArgument>
+        </scg:List>
+      </ui:RemoveLogFields.Fields>
+    </ui:RemoveLogFields>
+  </Sequence>
+</Activity>
