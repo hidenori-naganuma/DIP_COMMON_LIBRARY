@@ -1,4 +1,5 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="Main" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Activity mc:Ignorable="sap sap2010" x:Class="Main" this:Main.in_commonSettingPath="ユーザー設定.xlsx" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:this="clr-namespace:" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
     <x:Property Name="in_commonSettingPath" Type="InArgument(x:String)" />
     <x:Property Name="out_dicCommonSetting" Type="OutArgument(scg:Dictionary(x:String, x:Object))" />
@@ -6,7 +7,7 @@
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>527,1877</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>546,1734</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <scg:List x:TypeArguments="x:String" Capacity="44">
@@ -59,7 +60,7 @@
       <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
     </scg:List>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="共通設定ファイル読み込み" sap:VirtualizedContainerService.HintSize="487,1797" sap2010:WorkflowViewState.IdRef="Sequence_11">
+  <Sequence DisplayName="共通設定ファイル読み込み" sap:VirtualizedContainerService.HintSize="526,1634" sap2010:WorkflowViewState.IdRef="Sequence_11">
     <Sequence.Variables>
       <Variable x:TypeArguments="x:String" Name="commonSettingFilePath" />
       <Variable x:TypeArguments="sd:DataTable" Name="commonSettingDataTable" />
@@ -69,13 +70,12 @@
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <ui:LogMessage DisplayName="メッセージをログ" sap:VirtualizedContainerService.HintSize="465,91" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Info" Message="[&quot;【共通設定】 設定ファイル(&quot; + in_commonSettingPath + &quot;)の読み込みを開始します&quot;]" />
-    <If Condition="[File.Exists(in_commonSettingPath)]" DisplayName="引数が正しくない時はエラーを返す" sap:VirtualizedContainerService.HintSize="465,208" sap2010:WorkflowViewState.IdRef="If_9">
+    <If Condition="[File.Exists(in_commonSettingPath)]" DisplayName="引数が正しくない時はエラーを返す" sap:VirtualizedContainerService.HintSize="484,208" sap2010:WorkflowViewState.IdRef="If_9">
       <If.Else>
         <Throw DisplayName="スロー" Exception="[new ArgumentException(&quot;共通設定ファイルパスが正しくありません&quot;, in_commonSettingPath)]" sap:VirtualizedContainerService.HintSize="200,22" sap2010:WorkflowViewState.IdRef="Throw_1" />
       </If.Else>
     </If>
-    <ui:ReadCsvFile sap2010:Annotation.AnnotationText="共通設定ファイルをチェックする&#xA;項目を読み込む。" DataTable="[commonSettingDataTable]" Delimitator="Comma" DisplayName="チェック項目　読み込み" Encoding="SJIS" FilePath="共通設定ファイル読み込み既定値.csv" sap:VirtualizedContainerService.HintSize="465,101" sap2010:WorkflowViewState.IdRef="ReadCsvFile_1">
+    <ui:ReadCsvFile sap2010:Annotation.AnnotationText="共通設定ファイルをチェックする&#xA;項目を読み込む。" DataTable="[commonSettingDataTable]" Delimitator="Comma" DisplayName="チェック項目　読み込み" Encoding="SJIS" FilePath="共通設定ファイル読み込み既定値.csv" sap:VirtualizedContainerService.HintSize="484,101" sap2010:WorkflowViewState.IdRef="ReadCsvFile_1">
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -83,7 +83,7 @@
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
     </ui:ReadCsvFile>
-    <Assign DisplayName="共通設定ファイルのパス　保存" sap:VirtualizedContainerService.HintSize="465,60" sap2010:WorkflowViewState.IdRef="Assign_2">
+    <Assign DisplayName="共通設定ファイルのパス　保存" sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_2">
       <Assign.To>
         <OutArgument x:TypeArguments="x:String">[commonSettingFilePath]</OutArgument>
       </Assign.To>
@@ -91,7 +91,7 @@
         <InArgument x:TypeArguments="x:String">[in_commonSettingPath]</InArgument>
       </Assign.Value>
     </Assign>
-    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="共通設定ファイルを読み込み、&#xA;Dictionary型のデータとして出力" DisplayName="共通設定ファイル読み込み" sap:VirtualizedContainerService.HintSize="465,129" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="設定ファイル読み込み.xaml">
+    <ui:InvokeWorkflowFile ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="共通設定ファイルを読み込み、&#xA;Dictionary型のデータとして出力" DisplayName="共通設定ファイル読み込み" sap:VirtualizedContainerService.HintSize="484,129" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="設定ファイル読み込み_old.xaml">
       <ui:InvokeWorkflowFile.Arguments>
         <InArgument x:TypeArguments="x:String" x:Key="in_ConfigFile">[commonSettingFilePath]</InArgument>
         <InArgument x:TypeArguments="s:String[]" x:Key="in_ConfigSheets">[{"Settings"}]</InArgument>
@@ -103,7 +103,7 @@
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
     </ui:InvokeWorkflowFile>
-    <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[commonSettingDataTable]" DisplayName="チェック項目分　繰り返し" sap:VirtualizedContainerService.HintSize="465,51" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
+    <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[commonSettingDataTable]" DisplayName="チェック項目分　繰り返し" sap:VirtualizedContainerService.HintSize="484,51" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
       <ui:ForEachRow.Body>
         <ActivityAction x:TypeArguments="sd:DataRow">
           <ActivityAction.Argument>
